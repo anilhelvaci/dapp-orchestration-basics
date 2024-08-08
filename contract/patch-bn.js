@@ -10,7 +10,7 @@
   // architecture yet.
   function inherits (ctor, superCtor) {
     ctor.super_ = superCtor;
-    var TempCtor = function () {};
+    const TempCtor = function () {};
     TempCtor.prototype = superCtor.prototype;
     ctor.prototype = new TempCtor();
     ctor.prototype.constructor = ctor;
@@ -48,7 +48,7 @@
   BN.BN = BN;
   BN.wordSize = 26;
 
-  var Buffer;
+  let Buffer;
   try {
     if (typeof window !== 'undefined' && typeof window.Buffer !== 'undefined') {
       Buffer = window.Buffer;
@@ -92,7 +92,7 @@
     assert(base === (base | 0) && base >= 2 && base <= 36);
 
     number = number.toString().replace(/\s+/g, '');
-    var start = 0;
+    let start = 0;
     if (number[0] === '-') {
       start++;
       this.negative = 1;
@@ -155,8 +155,8 @@
       this.words[i] = 0;
     }
 
-    var j, w;
-    var off = 0;
+    let j; let w;
+    let off = 0;
     if (endian === 'be') {
       for (i = number.length - 1, j = 0; i >= 0; i -= 3) {
         w = number[i] | (number[i - 1] << 8) | (number[i - 2] << 16);
@@ -184,7 +184,7 @@
   };
 
   function parseHex4Bits (string, index) {
-    var c = string.charCodeAt(index);
+    const c = string.charCodeAt(index);
     // '0' - '9'
     if (c >= 48 && c <= 57) {
       return c - 48;
@@ -195,12 +195,12 @@
     } else if (c >= 97 && c <= 102) {
       return c - 87;
     } else {
-      assert(false, 'Invalid character in ' + string);
+      assert(false, `Invalid character in ${  string}`);
     }
   }
 
   function parseHexByte (string, lowerBound, index) {
-    var r = parseHex4Bits(string, index);
+    let r = parseHex4Bits(string, index);
     if (index - 1 >= lowerBound) {
       r |= parseHex4Bits(string, index - 1) << 4;
     }
@@ -216,10 +216,10 @@
     }
 
     // 24-bits chunks
-    var off = 0;
-    var j = 0;
+    let off = 0;
+    let j = 0;
 
-    var w;
+    let w;
     if (endian === 'be') {
       for (i = number.length - 1; i >= start; i -= 2) {
         w = parseHexByte(number, start, i) << off;
@@ -233,7 +233,7 @@
         }
       }
     } else {
-      var parseLength = number.length - start;
+      const parseLength = number.length - start;
       for (i = parseLength % 2 === 0 ? start + 1 : start; i < number.length; i += 2) {
         w = parseHexByte(number, start, i) << off;
         this.words[j] |= w & 0x3ffffff;
@@ -251,11 +251,11 @@
   };
 
   function parseBase (str, start, end, mul) {
-    var r = 0;
-    var b = 0;
-    var len = Math.min(str.length, end);
-    for (var i = start; i < len; i++) {
-      var c = str.charCodeAt(i) - 48;
+    let r = 0;
+    let b = 0;
+    const len = Math.min(str.length, end);
+    for (let i = start; i < len; i++) {
+      const c = str.charCodeAt(i) - 48;
 
       r *= mul;
 
@@ -289,11 +289,11 @@
     limbLen--;
     limbPow = (limbPow / base) | 0;
 
-    var total = number.length - start;
-    var mod = total % limbLen;
-    var end = Math.min(total, total - mod) + start;
+    const total = number.length - start;
+    const mod = total % limbLen;
+    const end = Math.min(total, total - mod) + start;
 
-    var word = 0;
+    let word = 0;
     for (var i = start; i < end; i += limbLen) {
       word = parseBase(number, i, i + limbLen, base);
 
@@ -306,7 +306,7 @@
     }
 
     if (mod !== 0) {
-      var pow = 1;
+      let pow = 1;
       word = parseBase(number, i, number.length, base);
 
       for (i = 0; i < mod; i++) {
@@ -326,7 +326,7 @@
 
   BN.prototype.copy = function copy (dest) {
     dest.words = new Array(this.length);
-    for (var i = 0; i < this.length; i++) {
+    for (let i = 0; i < this.length; i++) {
       dest.words[i] = this.words[i];
     }
     dest.length = this.length;
@@ -346,7 +346,7 @@
   };
 
   BN.prototype.clone = function clone () {
-    var r = new BN(null);
+    const r = new BN(null);
     this.copy(r);
     return r;
   };
@@ -387,7 +387,7 @@
   }
 
   function inspect () {
-    return (this.red ? '<BN-R: ' : '<BN: ') + this.toString(16) + '>';
+    return `${(this.red ? '<BN-R: ' : '<BN: ') + this.toString(16)  }>`;
   }
 
   /*
@@ -420,7 +420,7 @@
 
   */
 
-  var zeros = [
+  const zeros = [
     '',
     '0',
     '00',
@@ -449,7 +449,7 @@
     '0000000000000000000000000'
   ];
 
-  var groupSizes = [
+  const groupSizes = [
     0, 0,
     25, 16, 12, 11, 10, 9, 8,
     8, 7, 7, 7, 7, 6, 6,
@@ -458,7 +458,7 @@
     5, 5, 5, 5, 5, 5, 5
   ];
 
-  var groupBases = [
+  const groupBases = [
     0, 0,
     33554432, 43046721, 16777216, 48828125, 60466176, 40353607, 16777216,
     43046721, 10000000, 19487171, 35831808, 62748517, 7529536, 11390625,
@@ -471,14 +471,14 @@
     base = base || 10;
     padding = padding | 0 || 1;
 
-    var out;
+    let out;
     if (base === 16 || base === 'hex') {
       out = '';
-      var off = 0;
-      var carry = 0;
-      for (var i = 0; i < this.length; i++) {
-        var w = this.words[i];
-        var word = (((w << off) | carry) & 0xffffff).toString(16);
+      let off = 0;
+      let carry = 0;
+      for (let i = 0; i < this.length; i++) {
+        const w = this.words[i];
+        const word = (((w << off) | carry) & 0xffffff).toString(16);
         carry = (w >>> (24 - off)) & 0xffffff;
         off += 2;
         if (off >= 26) {
@@ -495,24 +495,24 @@
         out = carry.toString(16) + out;
       }
       while (out.length % padding !== 0) {
-        out = '0' + out;
+        out = `0${  out}`;
       }
       if (this.negative !== 0) {
-        out = '-' + out;
+        out = `-${  out}`;
       }
       return out;
     }
 
     if (base === (base | 0) && base >= 2 && base <= 36) {
       // var groupSize = Math.floor(BN.wordSize * Math.LN2 / Math.log(base));
-      var groupSize = groupSizes[base];
+      const groupSize = groupSizes[base];
       // var groupBase = Math.pow(base, groupSize);
-      var groupBase = groupBases[base];
+      const groupBase = groupBases[base];
       out = '';
-      var c = this.clone();
+      let c = this.clone();
       c.negative = 0;
       while (!c.isZero()) {
-        var r = c.modrn(groupBase).toString(base);
+        const r = c.modrn(groupBase).toString(base);
         c = c.idivn(groupBase);
 
         if (!c.isZero()) {
@@ -522,13 +522,13 @@
         }
       }
       if (this.isZero()) {
-        out = '0' + out;
+        out = `0${  out}`;
       }
       while (out.length % padding !== 0) {
-        out = '0' + out;
+        out = `0${  out}`;
       }
       if (this.negative !== 0) {
-        out = '-' + out;
+        out = `-${  out}`;
       }
       return out;
     }
@@ -537,7 +537,7 @@
   };
 
   BN.prototype.toNumber = function toNumber () {
-    var ret = this.words[0];
+    let ret = this.words[0];
     if (this.length === 2) {
       ret += this.words[1] * 0x4000000;
     } else if (this.length === 3 && this.words[2] === 0x01) {
@@ -563,7 +563,7 @@
     return this.toArrayLike(Array, endian, length);
   };
 
-  var allocate = function allocate (ArrayType, size) {
+  const allocate = function allocate (ArrayType, size) {
     if (ArrayType.allocUnsafe) {
       return ArrayType.allocUnsafe(size);
     }
@@ -573,23 +573,23 @@
   BN.prototype.toArrayLike = function toArrayLike (ArrayType, endian, length) {
     this._strip();
 
-    var byteLength = this.byteLength();
-    var reqLength = length || Math.max(1, byteLength);
+    const byteLength = this.byteLength();
+    const reqLength = length || Math.max(1, byteLength);
     assert(byteLength <= reqLength, 'byte array longer than desired length');
     assert(reqLength > 0, 'Requested array length <= 0');
 
-    var res = allocate(ArrayType, reqLength);
-    var postfix = endian === 'le' ? 'LE' : 'BE';
-    this['_toArrayLike' + postfix](res, byteLength);
+    const res = allocate(ArrayType, reqLength);
+    const postfix = endian === 'le' ? 'LE' : 'BE';
+    this[`_toArrayLike${  postfix}`](res, byteLength);
     return res;
   };
 
   BN.prototype._toArrayLikeLE = function _toArrayLikeLE (res, byteLength) {
-    var position = 0;
-    var carry = 0;
+    let position = 0;
+    let carry = 0;
 
-    for (var i = 0, shift = 0; i < this.length; i++) {
-      var word = (this.words[i] << shift) | carry;
+    for (let i = 0, shift = 0; i < this.length; i++) {
+      const word = (this.words[i] << shift) | carry;
 
       res[position++] = word & 0xff;
       if (position < res.length) {
@@ -621,11 +621,11 @@
   };
 
   BN.prototype._toArrayLikeBE = function _toArrayLikeBE (res, byteLength) {
-    var position = res.length - 1;
-    var carry = 0;
+    let position = res.length - 1;
+    let carry = 0;
 
-    for (var i = 0, shift = 0; i < this.length; i++) {
-      var word = (this.words[i] << shift) | carry;
+    for (let i = 0, shift = 0; i < this.length; i++) {
+      const word = (this.words[i] << shift) | carry;
 
       res[position--] = word & 0xff;
       if (position >= 0) {
@@ -662,8 +662,8 @@
     };
   } else {
     BN.prototype._countBits = function _countBits (w) {
-      var t = w;
-      var r = 0;
+      let t = w;
+      let r = 0;
       if (t >= 0x1000) {
         r += 13;
         t >>>= 13;
@@ -688,8 +688,8 @@
     // Short-cut
     if (w === 0) return 26;
 
-    var t = w;
-    var r = 0;
+    let t = w;
+    let r = 0;
     if ((t & 0x1fff) === 0) {
       r += 13;
       t >>>= 13;
@@ -714,17 +714,17 @@
 
   // Return number of used bits in a BN
   BN.prototype.bitLength = function bitLength () {
-    var w = this.words[this.length - 1];
-    var hi = this._countBits(w);
+    const w = this.words[this.length - 1];
+    const hi = this._countBits(w);
     return (this.length - 1) * 26 + hi;
   };
 
   function toBitArray (num) {
-    var w = new Array(num.bitLength());
+    const w = new Array(num.bitLength());
 
-    for (var bit = 0; bit < w.length; bit++) {
-      var off = (bit / 26) | 0;
-      var wbit = bit % 26;
+    for (let bit = 0; bit < w.length; bit++) {
+      const off = (bit / 26) | 0;
+      const wbit = bit % 26;
 
       w[bit] = (num.words[off] >>> wbit) & 0x01;
     }
@@ -736,9 +736,9 @@
   BN.prototype.zeroBits = function zeroBits () {
     if (this.isZero()) return 0;
 
-    var r = 0;
-    for (var i = 0; i < this.length; i++) {
-      var b = this._zeroBits(this.words[i]);
+    let r = 0;
+    for (let i = 0; i < this.length; i++) {
+      const b = this._zeroBits(this.words[i]);
       r += b;
       if (b !== 26) break;
     }
@@ -786,7 +786,7 @@
       this.words[this.length++] = 0;
     }
 
-    for (var i = 0; i < num.length; i++) {
+    for (let i = 0; i < num.length; i++) {
       this.words[i] = this.words[i] | num.words[i];
     }
 
@@ -812,14 +812,14 @@
   // And `num` with `this` in-place
   BN.prototype.iuand = function iuand (num) {
     // b = min-length(num, this)
-    var b;
+    let b;
     if (this.length > num.length) {
       b = num;
     } else {
       b = this;
     }
 
-    for (var i = 0; i < b.length; i++) {
+    for (let i = 0; i < b.length; i++) {
       this.words[i] = this.words[i] & num.words[i];
     }
 
@@ -847,8 +847,8 @@
   // Xor `num` with `this` in-place
   BN.prototype.iuxor = function iuxor (num) {
     // a.length > b.length
-    var a;
-    var b;
+    let a;
+    let b;
     if (this.length > num.length) {
       a = this;
       b = num;
@@ -892,8 +892,8 @@
   BN.prototype.inotn = function inotn (width) {
     assert(typeof width === 'number' && width >= 0);
 
-    var bytesNeeded = Math.ceil(width / 26) | 0;
-    var bitsLeft = width % 26;
+    let bytesNeeded = Math.ceil(width / 26) | 0;
+    const bitsLeft = width % 26;
 
     // Extend the buffer with leading zeroes
     this._expand(bytesNeeded);
@@ -924,8 +924,8 @@
   BN.prototype.setn = function setn (bit, val) {
     assert(typeof bit === 'number' && bit >= 0);
 
-    var off = (bit / 26) | 0;
-    var wbit = bit % 26;
+    const off = (bit / 26) | 0;
+    const wbit = bit % 26;
 
     this._expand(off + 1);
 
@@ -940,7 +940,7 @@
 
   // Add `num` to `this` in-place
   BN.prototype.iadd = function iadd (num) {
-    var r;
+    let r;
 
     // negative + positive
     if (this.negative !== 0 && num.negative === 0) {
@@ -958,7 +958,7 @@
     }
 
     // a.length > b.length
-    var a, b;
+    let a; let b;
     if (this.length > num.length) {
       a = this;
       b = num;
@@ -967,7 +967,7 @@
       b = this;
     }
 
-    var carry = 0;
+    let carry = 0;
     for (var i = 0; i < b.length; i++) {
       r = (a.words[i] | 0) + (b.words[i] | 0) + carry;
       this.words[i] = r & 0x3ffffff;
@@ -995,7 +995,7 @@
 
   // Add `num` to `this`
   BN.prototype.add = function add (num) {
-    var res;
+    let res;
     if (num.negative !== 0 && this.negative === 0) {
       num.negative = 0;
       res = this.sub(num);
@@ -1031,7 +1031,7 @@
     }
 
     // At this point both numbers are positive
-    var cmp = this.cmp(num);
+    const cmp = this.cmp(num);
 
     // Optimization - zeroify
     if (cmp === 0) {
@@ -1042,7 +1042,7 @@
     }
 
     // a > b
-    var a, b;
+    let a; let b;
     if (cmp > 0) {
       a = this;
       b = num;
@@ -1051,7 +1051,7 @@
       b = this;
     }
 
-    var carry = 0;
+    let carry = 0;
     for (var i = 0; i < b.length; i++) {
       r = (a.words[i] | 0) - (b.words[i] | 0) + carry;
       carry = r >> 26;
@@ -1086,27 +1086,27 @@
 
   function smallMulTo (self, num, out) {
     out.negative = num.negative ^ self.negative;
-    var len = (self.length + num.length) | 0;
+    let len = (self.length + num.length) | 0;
     out.length = len;
     len = (len - 1) | 0;
 
     // Peel one iteration (compiler can't do it, because of code complexity)
-    var a = self.words[0] | 0;
-    var b = num.words[0] | 0;
-    var r = a * b;
+    let a = self.words[0] | 0;
+    let b = num.words[0] | 0;
+    let r = a * b;
 
-    var lo = r & 0x3ffffff;
-    var carry = (r / 0x4000000) | 0;
+    const lo = r & 0x3ffffff;
+    let carry = (r / 0x4000000) | 0;
     out.words[0] = lo;
 
     for (var k = 1; k < len; k++) {
       // Sum all words with the same `i + j = k` and accumulate `ncarry`,
       // note that ncarry could be >= 0x3ffffff
-      var ncarry = carry >>> 26;
-      var rword = carry & 0x3ffffff;
-      var maxJ = Math.min(k, num.length - 1);
-      for (var j = Math.max(0, k - self.length + 1); j <= maxJ; j++) {
-        var i = (k - j) | 0;
+      let ncarry = carry >>> 26;
+      let rword = carry & 0x3ffffff;
+      const maxJ = Math.min(k, num.length - 1);
+      for (let j = Math.max(0, k - self.length + 1); j <= maxJ; j++) {
+        const i = (k - j) | 0;
         a = self.words[i] | 0;
         b = num.words[j] | 0;
         r = a * b + rword;
@@ -1128,74 +1128,74 @@
   // TODO(indutny): it may be reasonable to omit it for users who don't need
   // to work with 256-bit numbers, otherwise it gives 20% improvement for 256-bit
   // multiplication (like elliptic secp256k1).
-  var comb10MulTo = function comb10MulTo (self, num, out) {
-    var a = self.words;
-    var b = num.words;
-    var o = out.words;
-    var c = 0;
-    var lo;
-    var mid;
-    var hi;
-    var a0 = a[0] | 0;
-    var al0 = a0 & 0x1fff;
-    var ah0 = a0 >>> 13;
-    var a1 = a[1] | 0;
-    var al1 = a1 & 0x1fff;
-    var ah1 = a1 >>> 13;
-    var a2 = a[2] | 0;
-    var al2 = a2 & 0x1fff;
-    var ah2 = a2 >>> 13;
-    var a3 = a[3] | 0;
-    var al3 = a3 & 0x1fff;
-    var ah3 = a3 >>> 13;
-    var a4 = a[4] | 0;
-    var al4 = a4 & 0x1fff;
-    var ah4 = a4 >>> 13;
-    var a5 = a[5] | 0;
-    var al5 = a5 & 0x1fff;
-    var ah5 = a5 >>> 13;
-    var a6 = a[6] | 0;
-    var al6 = a6 & 0x1fff;
-    var ah6 = a6 >>> 13;
-    var a7 = a[7] | 0;
-    var al7 = a7 & 0x1fff;
-    var ah7 = a7 >>> 13;
-    var a8 = a[8] | 0;
-    var al8 = a8 & 0x1fff;
-    var ah8 = a8 >>> 13;
-    var a9 = a[9] | 0;
-    var al9 = a9 & 0x1fff;
-    var ah9 = a9 >>> 13;
-    var b0 = b[0] | 0;
-    var bl0 = b0 & 0x1fff;
-    var bh0 = b0 >>> 13;
-    var b1 = b[1] | 0;
-    var bl1 = b1 & 0x1fff;
-    var bh1 = b1 >>> 13;
-    var b2 = b[2] | 0;
-    var bl2 = b2 & 0x1fff;
-    var bh2 = b2 >>> 13;
-    var b3 = b[3] | 0;
-    var bl3 = b3 & 0x1fff;
-    var bh3 = b3 >>> 13;
-    var b4 = b[4] | 0;
-    var bl4 = b4 & 0x1fff;
-    var bh4 = b4 >>> 13;
-    var b5 = b[5] | 0;
-    var bl5 = b5 & 0x1fff;
-    var bh5 = b5 >>> 13;
-    var b6 = b[6] | 0;
-    var bl6 = b6 & 0x1fff;
-    var bh6 = b6 >>> 13;
-    var b7 = b[7] | 0;
-    var bl7 = b7 & 0x1fff;
-    var bh7 = b7 >>> 13;
-    var b8 = b[8] | 0;
-    var bl8 = b8 & 0x1fff;
-    var bh8 = b8 >>> 13;
-    var b9 = b[9] | 0;
-    var bl9 = b9 & 0x1fff;
-    var bh9 = b9 >>> 13;
+  let comb10MulTo = function comb10MulTo (self, num, out) {
+    const a = self.words;
+    const b = num.words;
+    const o = out.words;
+    let c = 0;
+    let lo;
+    let mid;
+    let hi;
+    const a0 = a[0] | 0;
+    const al0 = a0 & 0x1fff;
+    const ah0 = a0 >>> 13;
+    const a1 = a[1] | 0;
+    const al1 = a1 & 0x1fff;
+    const ah1 = a1 >>> 13;
+    const a2 = a[2] | 0;
+    const al2 = a2 & 0x1fff;
+    const ah2 = a2 >>> 13;
+    const a3 = a[3] | 0;
+    const al3 = a3 & 0x1fff;
+    const ah3 = a3 >>> 13;
+    const a4 = a[4] | 0;
+    const al4 = a4 & 0x1fff;
+    const ah4 = a4 >>> 13;
+    const a5 = a[5] | 0;
+    const al5 = a5 & 0x1fff;
+    const ah5 = a5 >>> 13;
+    const a6 = a[6] | 0;
+    const al6 = a6 & 0x1fff;
+    const ah6 = a6 >>> 13;
+    const a7 = a[7] | 0;
+    const al7 = a7 & 0x1fff;
+    const ah7 = a7 >>> 13;
+    const a8 = a[8] | 0;
+    const al8 = a8 & 0x1fff;
+    const ah8 = a8 >>> 13;
+    const a9 = a[9] | 0;
+    const al9 = a9 & 0x1fff;
+    const ah9 = a9 >>> 13;
+    const b0 = b[0] | 0;
+    const bl0 = b0 & 0x1fff;
+    const bh0 = b0 >>> 13;
+    const b1 = b[1] | 0;
+    const bl1 = b1 & 0x1fff;
+    const bh1 = b1 >>> 13;
+    const b2 = b[2] | 0;
+    const bl2 = b2 & 0x1fff;
+    const bh2 = b2 >>> 13;
+    const b3 = b[3] | 0;
+    const bl3 = b3 & 0x1fff;
+    const bh3 = b3 >>> 13;
+    const b4 = b[4] | 0;
+    const bl4 = b4 & 0x1fff;
+    const bh4 = b4 >>> 13;
+    const b5 = b[5] | 0;
+    const bl5 = b5 & 0x1fff;
+    const bh5 = b5 >>> 13;
+    const b6 = b[6] | 0;
+    const bl6 = b6 & 0x1fff;
+    const bh6 = b6 >>> 13;
+    const b7 = b[7] | 0;
+    const bl7 = b7 & 0x1fff;
+    const bh7 = b7 >>> 13;
+    const b8 = b[8] | 0;
+    const bl8 = b8 & 0x1fff;
+    const bh8 = b8 >>> 13;
+    const b9 = b[9] | 0;
+    const bl9 = b9 & 0x1fff;
+    const bh9 = b9 >>> 13;
 
     out.negative = self.negative ^ num.negative;
     out.length = 19;
@@ -1204,7 +1204,7 @@
     mid = Math.imul(al0, bh0);
     mid = (mid + Math.imul(ah0, bl0)) | 0;
     hi = Math.imul(ah0, bh0);
-    var w0 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w0 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w0 >>> 26)) | 0;
     w0 &= 0x3ffffff;
     /* k = 1 */
@@ -1216,7 +1216,7 @@
     mid = (mid + Math.imul(al0, bh1)) | 0;
     mid = (mid + Math.imul(ah0, bl1)) | 0;
     hi = (hi + Math.imul(ah0, bh1)) | 0;
-    var w1 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w1 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w1 >>> 26)) | 0;
     w1 &= 0x3ffffff;
     /* k = 2 */
@@ -1232,7 +1232,7 @@
     mid = (mid + Math.imul(al0, bh2)) | 0;
     mid = (mid + Math.imul(ah0, bl2)) | 0;
     hi = (hi + Math.imul(ah0, bh2)) | 0;
-    var w2 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w2 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w2 >>> 26)) | 0;
     w2 &= 0x3ffffff;
     /* k = 3 */
@@ -1252,7 +1252,7 @@
     mid = (mid + Math.imul(al0, bh3)) | 0;
     mid = (mid + Math.imul(ah0, bl3)) | 0;
     hi = (hi + Math.imul(ah0, bh3)) | 0;
-    var w3 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w3 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w3 >>> 26)) | 0;
     w3 &= 0x3ffffff;
     /* k = 4 */
@@ -1276,7 +1276,7 @@
     mid = (mid + Math.imul(al0, bh4)) | 0;
     mid = (mid + Math.imul(ah0, bl4)) | 0;
     hi = (hi + Math.imul(ah0, bh4)) | 0;
-    var w4 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w4 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w4 >>> 26)) | 0;
     w4 &= 0x3ffffff;
     /* k = 5 */
@@ -1304,7 +1304,7 @@
     mid = (mid + Math.imul(al0, bh5)) | 0;
     mid = (mid + Math.imul(ah0, bl5)) | 0;
     hi = (hi + Math.imul(ah0, bh5)) | 0;
-    var w5 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w5 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w5 >>> 26)) | 0;
     w5 &= 0x3ffffff;
     /* k = 6 */
@@ -1336,7 +1336,7 @@
     mid = (mid + Math.imul(al0, bh6)) | 0;
     mid = (mid + Math.imul(ah0, bl6)) | 0;
     hi = (hi + Math.imul(ah0, bh6)) | 0;
-    var w6 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w6 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w6 >>> 26)) | 0;
     w6 &= 0x3ffffff;
     /* k = 7 */
@@ -1372,7 +1372,7 @@
     mid = (mid + Math.imul(al0, bh7)) | 0;
     mid = (mid + Math.imul(ah0, bl7)) | 0;
     hi = (hi + Math.imul(ah0, bh7)) | 0;
-    var w7 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w7 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w7 >>> 26)) | 0;
     w7 &= 0x3ffffff;
     /* k = 8 */
@@ -1412,7 +1412,7 @@
     mid = (mid + Math.imul(al0, bh8)) | 0;
     mid = (mid + Math.imul(ah0, bl8)) | 0;
     hi = (hi + Math.imul(ah0, bh8)) | 0;
-    var w8 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w8 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w8 >>> 26)) | 0;
     w8 &= 0x3ffffff;
     /* k = 9 */
@@ -1456,7 +1456,7 @@
     mid = (mid + Math.imul(al0, bh9)) | 0;
     mid = (mid + Math.imul(ah0, bl9)) | 0;
     hi = (hi + Math.imul(ah0, bh9)) | 0;
-    var w9 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w9 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w9 >>> 26)) | 0;
     w9 &= 0x3ffffff;
     /* k = 10 */
@@ -1496,7 +1496,7 @@
     mid = (mid + Math.imul(al1, bh9)) | 0;
     mid = (mid + Math.imul(ah1, bl9)) | 0;
     hi = (hi + Math.imul(ah1, bh9)) | 0;
-    var w10 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w10 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w10 >>> 26)) | 0;
     w10 &= 0x3ffffff;
     /* k = 11 */
@@ -1532,7 +1532,7 @@
     mid = (mid + Math.imul(al2, bh9)) | 0;
     mid = (mid + Math.imul(ah2, bl9)) | 0;
     hi = (hi + Math.imul(ah2, bh9)) | 0;
-    var w11 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w11 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w11 >>> 26)) | 0;
     w11 &= 0x3ffffff;
     /* k = 12 */
@@ -1564,7 +1564,7 @@
     mid = (mid + Math.imul(al3, bh9)) | 0;
     mid = (mid + Math.imul(ah3, bl9)) | 0;
     hi = (hi + Math.imul(ah3, bh9)) | 0;
-    var w12 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w12 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w12 >>> 26)) | 0;
     w12 &= 0x3ffffff;
     /* k = 13 */
@@ -1592,7 +1592,7 @@
     mid = (mid + Math.imul(al4, bh9)) | 0;
     mid = (mid + Math.imul(ah4, bl9)) | 0;
     hi = (hi + Math.imul(ah4, bh9)) | 0;
-    var w13 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w13 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w13 >>> 26)) | 0;
     w13 &= 0x3ffffff;
     /* k = 14 */
@@ -1616,7 +1616,7 @@
     mid = (mid + Math.imul(al5, bh9)) | 0;
     mid = (mid + Math.imul(ah5, bl9)) | 0;
     hi = (hi + Math.imul(ah5, bh9)) | 0;
-    var w14 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w14 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w14 >>> 26)) | 0;
     w14 &= 0x3ffffff;
     /* k = 15 */
@@ -1636,7 +1636,7 @@
     mid = (mid + Math.imul(al6, bh9)) | 0;
     mid = (mid + Math.imul(ah6, bl9)) | 0;
     hi = (hi + Math.imul(ah6, bh9)) | 0;
-    var w15 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w15 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w15 >>> 26)) | 0;
     w15 &= 0x3ffffff;
     /* k = 16 */
@@ -1652,7 +1652,7 @@
     mid = (mid + Math.imul(al7, bh9)) | 0;
     mid = (mid + Math.imul(ah7, bl9)) | 0;
     hi = (hi + Math.imul(ah7, bh9)) | 0;
-    var w16 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w16 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w16 >>> 26)) | 0;
     w16 &= 0x3ffffff;
     /* k = 17 */
@@ -1664,7 +1664,7 @@
     mid = (mid + Math.imul(al8, bh9)) | 0;
     mid = (mid + Math.imul(ah8, bl9)) | 0;
     hi = (hi + Math.imul(ah8, bh9)) | 0;
-    var w17 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w17 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w17 >>> 26)) | 0;
     w17 &= 0x3ffffff;
     /* k = 18 */
@@ -1672,7 +1672,7 @@
     mid = Math.imul(al9, bh9);
     mid = (mid + Math.imul(ah9, bl9)) | 0;
     hi = Math.imul(ah9, bh9);
-    var w18 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
+    let w18 = (((c + lo) | 0) + ((mid & 0x1fff) << 13)) | 0;
     c = (((hi + (mid >>> 13)) | 0) + (w18 >>> 26)) | 0;
     w18 &= 0x3ffffff;
     o[0] = w0;
@@ -1710,22 +1710,22 @@
     out.negative = num.negative ^ self.negative;
     out.length = self.length + num.length;
 
-    var carry = 0;
-    var hncarry = 0;
+    let carry = 0;
+    let hncarry = 0;
     for (var k = 0; k < out.length - 1; k++) {
       // Sum all words with the same `i + j = k` and accumulate `ncarry`,
       // note that ncarry could be >= 0x3ffffff
-      var ncarry = hncarry;
+      let ncarry = hncarry;
       hncarry = 0;
-      var rword = carry & 0x3ffffff;
-      var maxJ = Math.min(k, num.length - 1);
-      for (var j = Math.max(0, k - self.length + 1); j <= maxJ; j++) {
-        var i = k - j;
-        var a = self.words[i] | 0;
-        var b = num.words[j] | 0;
-        var r = a * b;
+      let rword = carry & 0x3ffffff;
+      const maxJ = Math.min(k, num.length - 1);
+      for (let j = Math.max(0, k - self.length + 1); j <= maxJ; j++) {
+        const i = k - j;
+        const a = self.words[i] | 0;
+        const b = num.words[j] | 0;
+        const r = a * b;
 
-        var lo = r & 0x3ffffff;
+        let lo = r & 0x3ffffff;
         ncarry = (ncarry + ((r / 0x4000000) | 0)) | 0;
         lo = (lo + rword) | 0;
         rword = lo & 0x3ffffff;
@@ -1755,8 +1755,8 @@
   }
 
   BN.prototype.mulTo = function mulTo (num, out) {
-    var res;
-    var len = this.length + num.length;
+    let res;
+    const len = this.length + num.length;
     if (this.length === 10 && num.length === 10) {
       res = comb10MulTo(this, num, out);
     } else if (len < 63) {
@@ -1779,9 +1779,9 @@
   }
 
   FFTM.prototype.makeRBT = function makeRBT (N) {
-    var t = new Array(N);
-    var l = BN.prototype._countBits(N) - 1;
-    for (var i = 0; i < N; i++) {
+    const t = new Array(N);
+    const l = BN.prototype._countBits(N) - 1;
+    for (let i = 0; i < N; i++) {
       t[i] = this.revBin(i, l, N);
     }
 
@@ -1792,8 +1792,8 @@
   FFTM.prototype.revBin = function revBin (x, l, N) {
     if (x === 0 || x === N - 1) return x;
 
-    var rb = 0;
-    for (var i = 0; i < l; i++) {
+    let rb = 0;
+    for (let i = 0; i < l; i++) {
       rb |= (x & 1) << (l - i - 1);
       x >>= 1;
     }
@@ -1804,7 +1804,7 @@
   // Performs "tweedling" phase, therefore 'emulating'
   // behaviour of the recursive algorithm
   FFTM.prototype.permute = function permute (rbt, rws, iws, rtws, itws, N) {
-    for (var i = 0; i < N; i++) {
+    for (let i = 0; i < N; i++) {
       rtws[i] = rws[rbt[i]];
       itws[i] = iws[rbt[i]];
     }
@@ -1813,24 +1813,24 @@
   FFTM.prototype.transform = function transform (rws, iws, rtws, itws, N, rbt) {
     this.permute(rbt, rws, iws, rtws, itws, N);
 
-    for (var s = 1; s < N; s <<= 1) {
-      var l = s << 1;
+    for (let s = 1; s < N; s <<= 1) {
+      const l = s << 1;
 
-      var rtwdf = Math.cos(2 * Math.PI / l);
-      var itwdf = Math.sin(2 * Math.PI / l);
+      const rtwdf = Math.cos(2 * Math.PI / l);
+      const itwdf = Math.sin(2 * Math.PI / l);
 
-      for (var p = 0; p < N; p += l) {
-        var rtwdf_ = rtwdf;
-        var itwdf_ = itwdf;
+      for (let p = 0; p < N; p += l) {
+        let rtwdf_ = rtwdf;
+        let itwdf_ = itwdf;
 
-        for (var j = 0; j < s; j++) {
-          var re = rtws[p + j];
-          var ie = itws[p + j];
+        for (let j = 0; j < s; j++) {
+          const re = rtws[p + j];
+          const ie = itws[p + j];
 
-          var ro = rtws[p + j + s];
-          var io = itws[p + j + s];
+          let ro = rtws[p + j + s];
+          let io = itws[p + j + s];
 
-          var rx = rtwdf_ * ro - itwdf_ * io;
+          let rx = rtwdf_ * ro - itwdf_ * io;
 
           io = rtwdf_ * io + itwdf_ * ro;
           ro = rx;
@@ -1854,10 +1854,10 @@
   };
 
   FFTM.prototype.guessLen13b = function guessLen13b (n, m) {
-    var N = Math.max(m, n) | 1;
-    var odd = N & 1;
-    var i = 0;
-    for (N = N / 2 | 0; N; N = N >>> 1) {
+    let N = Math.max(m, n) | 1;
+    const odd = N & 1;
+    let i = 0;
+    for (N = N / 2 | 0; N; N >>>= 1) {
       i++;
     }
 
@@ -1867,8 +1867,8 @@
   FFTM.prototype.conjugate = function conjugate (rws, iws, N) {
     if (N <= 1) return;
 
-    for (var i = 0; i < N / 2; i++) {
-      var t = rws[i];
+    for (let i = 0; i < N / 2; i++) {
+      let t = rws[i];
 
       rws[i] = rws[N - i - 1];
       rws[N - i - 1] = t;
@@ -1881,9 +1881,9 @@
   };
 
   FFTM.prototype.normalize13b = function normalize13b (ws, N) {
-    var carry = 0;
-    for (var i = 0; i < N / 2; i++) {
-      var w = Math.round(ws[2 * i + 1] / N) * 0x2000 +
+    let carry = 0;
+    for (let i = 0; i < N / 2; i++) {
+      const w = Math.round(ws[2 * i + 1] / N) * 0x2000 +
         Math.round(ws[2 * i] / N) +
         carry;
 
@@ -1900,12 +1900,12 @@
   };
 
   FFTM.prototype.convert13b = function convert13b (ws, len, rws, N) {
-    var carry = 0;
+    let carry = 0;
     for (var i = 0; i < len; i++) {
-      carry = carry + (ws[i] | 0);
+      carry += (ws[i] | 0);
 
-      rws[2 * i] = carry & 0x1fff; carry = carry >>> 13;
-      rws[2 * i + 1] = carry & 0x1fff; carry = carry >>> 13;
+      rws[2 * i] = carry & 0x1fff; carry >>>= 13;
+      rws[2 * i + 1] = carry & 0x1fff; carry >>>= 13;
     }
 
     // Pad with zeroes
@@ -1918,8 +1918,8 @@
   };
 
   FFTM.prototype.stub = function stub (N) {
-    var ph = new Array(N);
-    for (var i = 0; i < N; i++) {
+    const ph = new Array(N);
+    for (let i = 0; i < N; i++) {
       ph[i] = 0;
     }
 
@@ -1927,21 +1927,21 @@
   };
 
   FFTM.prototype.mulp = function mulp (x, y, out) {
-    var N = 2 * this.guessLen13b(x.length, y.length);
+    const N = 2 * this.guessLen13b(x.length, y.length);
 
-    var rbt = this.makeRBT(N);
+    const rbt = this.makeRBT(N);
 
-    var _ = this.stub(N);
+    const _ = this.stub(N);
 
-    var rws = new Array(N);
-    var rwst = new Array(N);
-    var iwst = new Array(N);
+    const rws = new Array(N);
+    const rwst = new Array(N);
+    const iwst = new Array(N);
 
-    var nrws = new Array(N);
-    var nrwst = new Array(N);
-    var niwst = new Array(N);
+    const nrws = new Array(N);
+    const nrwst = new Array(N);
+    const niwst = new Array(N);
 
-    var rmws = out.words;
+    const rmws = out.words;
     rmws.length = N;
 
     this.convert13b(x.words, x.length, rws, N);
@@ -1950,8 +1950,8 @@
     this.transform(rws, _, rwst, iwst, N, rbt);
     this.transform(nrws, _, nrwst, niwst, N, rbt);
 
-    for (var i = 0; i < N; i++) {
-      var rx = rwst[i] * nrwst[i] - iwst[i] * niwst[i];
+    for (let i = 0; i < N; i++) {
+      const rx = rwst[i] * nrwst[i] - iwst[i] * niwst[i];
       iwst[i] = rwst[i] * niwst[i] + iwst[i] * nrwst[i];
       rwst[i] = rx;
     }
@@ -1968,14 +1968,14 @@
 
   // Multiply `this` by `num`
   BN.prototype.mul = function mul (num) {
-    var out = new BN(null);
+    const out = new BN(null);
     out.words = new Array(this.length + num.length);
     return this.mulTo(num, out);
   };
 
   // Multiply employing FFT
   BN.prototype.mulf = function mulf (num) {
-    var out = new BN(null);
+    const out = new BN(null);
     out.words = new Array(this.length + num.length);
     return jumboMulTo(this, num, out);
   };
@@ -1986,17 +1986,17 @@
   };
 
   BN.prototype.imuln = function imuln (num) {
-    var isNegNum = num < 0;
+    const isNegNum = num < 0;
     if (isNegNum) num = -num;
 
     assert(typeof num === 'number');
     assert(num < 0x4000000);
 
     // Carry
-    var carry = 0;
+    let carry = 0;
     for (var i = 0; i < this.length; i++) {
-      var w = (this.words[i] | 0) * num;
-      var lo = (w & 0x3ffffff) + (carry & 0x3ffffff);
+      const w = (this.words[i] | 0) * num;
+      const lo = (w & 0x3ffffff) + (carry & 0x3ffffff);
       carry >>= 26;
       carry += (w / 0x4000000) | 0;
       // NOTE: lo is 27bit maximum
@@ -2028,17 +2028,17 @@
 
   // Math.pow(`this`, `num`)
   BN.prototype.pow = function pow (num) {
-    var w = toBitArray(num);
+    const w = toBitArray(num);
     if (w.length === 0) return new BN(1);
 
     // Skip leading zeroes
-    var res = this;
+    let res = this;
     for (var i = 0; i < w.length; i++, res = res.sqr()) {
       if (w[i] !== 0) break;
     }
 
     if (++i < w.length) {
-      for (var q = res.sqr(); i < w.length; i++, q = q.sqr()) {
+      for (let q = res.sqr(); i < w.length; i++, q = q.sqr()) {
         if (w[i] === 0) continue;
 
         res = res.mul(q);
@@ -2051,17 +2051,17 @@
   // Shift-left in-place
   BN.prototype.iushln = function iushln (bits) {
     assert(typeof bits === 'number' && bits >= 0);
-    var r = bits % 26;
-    var s = (bits - r) / 26;
-    var carryMask = (0x3ffffff >>> (26 - r)) << (26 - r);
-    var i;
+    const r = bits % 26;
+    const s = (bits - r) / 26;
+    const carryMask = (0x3ffffff >>> (26 - r)) << (26 - r);
+    let i;
 
     if (r !== 0) {
-      var carry = 0;
+      let carry = 0;
 
       for (i = 0; i < this.length; i++) {
-        var newCarry = this.words[i] & carryMask;
-        var c = ((this.words[i] | 0) - newCarry) << r;
+        const newCarry = this.words[i] & carryMask;
+        const c = ((this.words[i] | 0) - newCarry) << r;
         this.words[i] = c | carry;
         carry = newCarry >>> (26 - r);
       }
@@ -2098,17 +2098,17 @@
   // NOTE: if `extended` is present - it will be filled with destroyed bits
   BN.prototype.iushrn = function iushrn (bits, hint, extended) {
     assert(typeof bits === 'number' && bits >= 0);
-    var h;
+    let h;
     if (hint) {
       h = (hint - (hint % 26)) / 26;
     } else {
       h = 0;
     }
 
-    var r = bits % 26;
-    var s = Math.min((bits - r) / 26, this.length);
-    var mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
-    var maskedWords = extended;
+    const r = bits % 26;
+    const s = Math.min((bits - r) / 26, this.length);
+    const mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
+    const maskedWords = extended;
 
     h -= s;
     h = Math.max(0, h);
@@ -2133,9 +2133,9 @@
       this.length = 1;
     }
 
-    var carry = 0;
+    let carry = 0;
     for (i = this.length - 1; i >= 0 && (carry !== 0 || i >= h); i--) {
-      var word = this.words[i] | 0;
+      const word = this.words[i] | 0;
       this.words[i] = (carry << (26 - r)) | (word >>> r);
       carry = word & mask;
     }
@@ -2180,15 +2180,15 @@
   // Test if n bit is set
   BN.prototype.testn = function testn (bit) {
     assert(typeof bit === 'number' && bit >= 0);
-    var r = bit % 26;
-    var s = (bit - r) / 26;
-    var q = 1 << r;
+    const r = bit % 26;
+    const s = (bit - r) / 26;
+    const q = 1 << r;
 
     // Fast case: bit is much higher than all existing words
     if (this.length <= s) return false;
 
     // Check bit and return
-    var w = this.words[s];
+    const w = this.words[s];
 
     return !!(w & q);
   };
@@ -2196,8 +2196,8 @@
   // Return only lowers bits of number (in-place)
   BN.prototype.imaskn = function imaskn (bits) {
     assert(typeof bits === 'number' && bits >= 0);
-    var r = bits % 26;
-    var s = (bits - r) / 26;
+    const r = bits % 26;
+    let s = (bits - r) / 26;
 
     assert(this.negative === 0, 'imaskn works only with positive numbers');
 
@@ -2211,7 +2211,7 @@
     this.length = Math.min(s, this.length);
 
     if (r !== 0) {
-      var mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
+      const mask = 0x3ffffff ^ ((0x3ffffff >>> r) << r);
       this.words[this.length - 1] &= mask;
     }
 
@@ -2284,7 +2284,7 @@
       this.negative = 1;
     } else {
       // Carry
-      for (var i = 0; i < this.length && this.words[i] < 0; i++) {
+      for (let i = 0; i < this.length && this.words[i] < 0; i++) {
         this.words[i] += 0x4000000;
         this.words[i + 1] -= 1;
       }
@@ -2312,16 +2312,16 @@
   };
 
   BN.prototype._ishlnsubmul = function _ishlnsubmul (num, mul, shift) {
-    var len = num.length + shift;
-    var i;
+    const len = num.length + shift;
+    let i;
 
     this._expand(len);
 
-    var w;
-    var carry = 0;
+    let w;
+    let carry = 0;
     for (i = 0; i < num.length; i++) {
       w = (this.words[i + shift] | 0) + carry;
-      var right = (num.words[i] | 0) * mul;
+      const right = (num.words[i] | 0) * mul;
       w -= right & 0x3ffffff;
       carry = (w >> 26) - ((right / 0x4000000) | 0);
       this.words[i + shift] = w & 0x3ffffff;
@@ -2348,14 +2348,14 @@
   };
 
   BN.prototype._wordDiv = function _wordDiv (num, mode) {
-    var shift = this.length - num.length;
+    let shift = this.length - num.length;
 
-    var a = this.clone();
-    var b = num;
+    let a = this.clone();
+    let b = num;
 
     // Normalize
-    var bhi = b.words[b.length - 1] | 0;
-    var bhiBits = this._countBits(bhi);
+    let bhi = b.words[b.length - 1] | 0;
+    const bhiBits = this._countBits(bhi);
     shift = 26 - bhiBits;
     if (shift !== 0) {
       b = b.ushln(shift);
@@ -2364,19 +2364,19 @@
     }
 
     // Initialize quotient
-    var m = a.length - b.length;
-    var q;
+    const m = a.length - b.length;
+    let q;
 
     if (mode !== 'mod') {
       q = new BN(null);
       q.length = m + 1;
       q.words = new Array(q.length);
-      for (var i = 0; i < q.length; i++) {
+      for (let i = 0; i < q.length; i++) {
         q.words[i] = 0;
       }
     }
 
-    var diff = a.clone()._ishlnsubmul(b, 1, m);
+    const diff = a.clone()._ishlnsubmul(b, 1, m);
     if (diff.negative === 0) {
       a = diff;
       if (q) {
@@ -2384,8 +2384,8 @@
       }
     }
 
-    for (var j = m - 1; j >= 0; j--) {
-      var qj = (a.words[b.length + j] | 0) * 0x4000000 +
+    for (let j = m - 1; j >= 0; j--) {
+      let qj = (a.words[b.length + j] | 0) * 0x4000000 +
         (a.words[b.length + j - 1] | 0);
 
       // NOTE: (qj / bhi) is (0x3ffffff * 0x4000000 + 0x3ffffff) / 0x2000000 max
@@ -2435,7 +2435,7 @@
       };
     }
 
-    var div, mod, res;
+    let div; let mod; let res;
     if (this.negative !== 0 && num.negative === 0) {
       res = this.neg().divmod(num, mode);
 
@@ -2451,8 +2451,8 @@
       }
 
       return {
-        div: div,
-        mod: mod
+        div,
+        mod
       };
     }
 
@@ -2464,7 +2464,7 @@
       }
 
       return {
-        div: div,
+        div,
         mod: res.mod
       };
     }
@@ -2481,7 +2481,7 @@
 
       return {
         div: res.div,
-        mod: mod
+        mod
       };
     }
 
@@ -2536,16 +2536,16 @@
 
   // Find Round(`this` / `num`)
   BN.prototype.divRound = function divRound (num) {
-    var dm = this.divmod(num);
+    const dm = this.divmod(num);
 
     // Fast case - exact division
     if (dm.mod.isZero()) return dm.div;
 
-    var mod = dm.div.negative !== 0 ? dm.mod.isub(num) : dm.mod;
+    const mod = dm.div.negative !== 0 ? dm.mod.isub(num) : dm.mod;
 
-    var half = num.ushrn(1);
-    var r2 = num.andln(1);
-    var cmp = mod.cmp(half);
+    const half = num.ushrn(1);
+    const r2 = num.andln(1);
+    const cmp = mod.cmp(half);
 
     // Round down
     if (cmp < 0 || (r2 === 1 && cmp === 0)) return dm.div;
@@ -2555,14 +2555,14 @@
   };
 
   BN.prototype.modrn = function modrn (num) {
-    var isNegNum = num < 0;
+    const isNegNum = num < 0;
     if (isNegNum) num = -num;
 
     assert(num <= 0x3ffffff);
-    var p = (1 << 26) % num;
+    const p = (1 << 26) % num;
 
-    var acc = 0;
-    for (var i = this.length - 1; i >= 0; i--) {
+    let acc = 0;
+    for (let i = this.length - 1; i >= 0; i--) {
       acc = (p * acc + (this.words[i] | 0)) % num;
     }
 
@@ -2576,14 +2576,14 @@
 
   // In-place division by number
   BN.prototype.idivn = function idivn (num) {
-    var isNegNum = num < 0;
+    const isNegNum = num < 0;
     if (isNegNum) num = -num;
 
     assert(num <= 0x3ffffff);
 
-    var carry = 0;
-    for (var i = this.length - 1; i >= 0; i--) {
-      var w = (this.words[i] | 0) + carry * 0x4000000;
+    let carry = 0;
+    for (let i = this.length - 1; i >= 0; i--) {
+      const w = (this.words[i] | 0) + carry * 0x4000000;
       this.words[i] = (w / num) | 0;
       carry = w % num;
     }
@@ -2600,8 +2600,8 @@
     assert(p.negative === 0);
     assert(!p.isZero());
 
-    var x = this;
-    var y = p.clone();
+    let x = this;
+    const y = p.clone();
 
     if (x.negative !== 0) {
       x = x.umod(p);
@@ -2610,14 +2610,14 @@
     }
 
     // A * x + B * y = x
-    var A = new BN(1);
-    var B = new BN(0);
+    const A = new BN(1);
+    const B = new BN(0);
 
     // C * x + D * y = y
-    var C = new BN(0);
-    var D = new BN(1);
+    const C = new BN(0);
+    const D = new BN(1);
 
-    var g = 0;
+    let g = 0;
 
     while (x.isEven() && y.isEven()) {
       x.iushrn(1);
@@ -2625,8 +2625,8 @@
       ++g;
     }
 
-    var yp = y.clone();
-    var xp = x.clone();
+    const yp = y.clone();
+    const xp = x.clone();
 
     while (!x.isZero()) {
       for (var i = 0, im = 1; (x.words[0] & im) === 0 && i < 26; ++i, im <<= 1);
@@ -2682,8 +2682,8 @@
     assert(p.negative === 0);
     assert(!p.isZero());
 
-    var a = this;
-    var b = p.clone();
+    let a = this;
+    const b = p.clone();
 
     if (a.negative !== 0) {
       a = a.umod(p);
@@ -2691,10 +2691,10 @@
       a = a.clone();
     }
 
-    var x1 = new BN(1);
-    var x2 = new BN(0);
+    const x1 = new BN(1);
+    const x2 = new BN(0);
 
-    var delta = b.clone();
+    const delta = b.clone();
 
     while (a.cmpn(1) > 0 && b.cmpn(1) > 0) {
       for (var i = 0, im = 1; (a.words[0] & im) === 0 && i < 26; ++i, im <<= 1);
@@ -2730,7 +2730,7 @@
       }
     }
 
-    var res;
+    let res;
     if (a.cmpn(1) === 0) {
       res = x1;
     } else {
@@ -2748,8 +2748,8 @@
     if (this.isZero()) return num.abs();
     if (num.isZero()) return this.abs();
 
-    var a = this.clone();
-    var b = num.clone();
+    let a = this.clone();
+    let b = num.clone();
     a.negative = 0;
     b.negative = 0;
 
@@ -2767,10 +2767,10 @@
         b.iushrn(1);
       }
 
-      var r = a.cmp(b);
+      const r = a.cmp(b);
       if (r < 0) {
         // Swap `a` and `b` to make `a` always bigger than `b`
-        var t = a;
+        const t = a;
         a = b;
         b = t;
       } else if (r === 0 || b.cmpn(1) === 0) {
@@ -2804,9 +2804,9 @@
   // Increment at the bit position in-line
   BN.prototype.bincn = function bincn (bit) {
     assert(typeof bit === 'number');
-    var r = bit % 26;
-    var s = (bit - r) / 26;
-    var q = 1 << r;
+    const r = bit % 26;
+    const s = (bit - r) / 26;
+    const q = 1 << r;
 
     // Fast case: bit is much higher than all existing words
     if (this.length <= s) {
@@ -2816,9 +2816,9 @@
     }
 
     // Add bit and propagate, if needed
-    var carry = q;
+    let carry = q;
     for (var i = s; carry !== 0 && i < this.length; i++) {
-      var w = this.words[i] | 0;
+      let w = this.words[i] | 0;
       w += carry;
       carry = w >>> 26;
       w &= 0x3ffffff;
@@ -2836,14 +2836,14 @@
   };
 
   BN.prototype.cmpn = function cmpn (num) {
-    var negative = num < 0;
+    const negative = num < 0;
 
     if (this.negative !== 0 && !negative) return -1;
     if (this.negative === 0 && negative) return 1;
 
     this._strip();
 
-    var res;
+    let res;
     if (this.length > 1) {
       res = 1;
     } else {
@@ -2853,7 +2853,7 @@
 
       assert(num <= 0x3ffffff, 'Number is too big');
 
-      var w = this.words[0] | 0;
+      const w = this.words[0] | 0;
       res = w === num ? 0 : w < num ? -1 : 1;
     }
     if (this.negative !== 0) return -res | 0;
@@ -2868,7 +2868,7 @@
     if (this.negative !== 0 && num.negative === 0) return -1;
     if (this.negative === 0 && num.negative !== 0) return 1;
 
-    var res = this.ucmp(num);
+    const res = this.ucmp(num);
     if (this.negative !== 0) return -res | 0;
     return res;
   };
@@ -2879,10 +2879,10 @@
     if (this.length > num.length) return 1;
     if (this.length < num.length) return -1;
 
-    var res = 0;
-    for (var i = this.length - 1; i >= 0; i--) {
-      var a = this.words[i] | 0;
-      var b = num.words[i] | 0;
+    let res = 0;
+    for (let i = this.length - 1; i >= 0; i--) {
+      const a = this.words[i] | 0;
+      const b = num.words[i] | 0;
 
       if (a === b) continue;
       if (a < b) {
@@ -3040,7 +3040,7 @@
   };
 
   // Prime numbers with efficient reduction
-  var primes = {
+  const primes = {
     k256: null,
     p224: null,
     p192: null,
@@ -3059,7 +3059,7 @@
   }
 
   MPrime.prototype._tmp = function _tmp () {
-    var tmp = new BN(null);
+    const tmp = new BN(null);
     tmp.words = new Array(Math.ceil(this.n / 13));
     return tmp;
   };
@@ -3067,8 +3067,8 @@
   MPrime.prototype.ireduce = function ireduce (num) {
     // Assumes that `num` is less than `P^2`
     // num = HI * (2 ^ N - K) + HI * K + LO = HI * K + LO (mod P)
-    var r = num;
-    var rlen;
+    let r = num;
+    let rlen;
 
     do {
       this.split(r, this.tmp);
@@ -3077,21 +3077,19 @@
       rlen = r.bitLength();
     } while (rlen > this.n);
 
-    var cmp = rlen < this.n ? -1 : r.ucmp(this.p);
+    const cmp = rlen < this.n ? -1 : r.ucmp(this.p);
     if (cmp === 0) {
       r.words[0] = 0;
       r.length = 1;
     } else if (cmp > 0) {
       r.isub(this.p);
-    } else {
-      if (r.strip !== undefined) {
+    } else if (r.strip !== undefined) {
         // r is a BN v4 instance
         r.strip();
       } else {
         // r is a BN v5 instance
         r._strip();
       }
-    }
 
     return r;
   };
@@ -3114,9 +3112,9 @@
 
   K256.prototype.split = function split (input, output) {
     // 256 = 9 * 26 + 22
-    var mask = 0x3fffff;
+    const mask = 0x3fffff;
 
-    var outLen = Math.min(input.length, 9);
+    const outLen = Math.min(input.length, 9);
     for (var i = 0; i < outLen; i++) {
       output.words[i] = input.words[i];
     }
@@ -3129,11 +3127,11 @@
     }
 
     // Shift by 9 limbs
-    var prev = input.words[9];
+    let prev = input.words[9];
     output.words[output.length++] = prev & mask;
 
     for (i = 10; i < input.length; i++) {
-      var next = input.words[i] | 0;
+      const next = input.words[i] | 0;
       input.words[i - 10] = ((next & mask) << 4) | (prev >>> 22);
       prev = next;
     }
@@ -3153,9 +3151,9 @@
     num.length += 2;
 
     // bounded at: 0x40 * 0x3ffffff + 0x3d0 = 0x100000390
-    var lo = 0;
-    for (var i = 0; i < num.length; i++) {
-      var w = num.words[i] | 0;
+    let lo = 0;
+    for (let i = 0; i < num.length; i++) {
+      const w = num.words[i] | 0;
       lo += w * 0x3d1;
       num.words[i] = lo & 0x3ffffff;
       lo = w * 0x40 + ((lo / 0x4000000) | 0);
@@ -3198,10 +3196,10 @@
 
   P25519.prototype.imulK = function imulK (num) {
     // K = 0x13
-    var carry = 0;
-    for (var i = 0; i < num.length; i++) {
-      var hi = (num.words[i] | 0) * 0x13 + carry;
-      var lo = hi & 0x3ffffff;
+    let carry = 0;
+    for (let i = 0; i < num.length; i++) {
+      let hi = (num.words[i] | 0) * 0x13 + carry;
+      const lo = hi & 0x3ffffff;
       hi >>>= 26;
 
       num.words[i] = lo;
@@ -3218,7 +3216,7 @@
     // Cached version of prime
     if (primes[name]) return primes[name];
 
-    var prime;
+    let prime;
     if (name === 'k256') {
       prime = new K256();
     } else if (name === 'p224') {
@@ -3228,7 +3226,7 @@
     } else if (name === 'p25519') {
       prime = new P25519();
     } else {
-      throw new Error('Unknown prime ' + name);
+      throw new Error(`Unknown prime ${  name}`);
     }
     primes[name] = prime;
 
@@ -3240,7 +3238,7 @@
   //
   function Red (m) {
     if (typeof m === 'string') {
-      var prime = BN._prime(m);
+      const prime = BN._prime(m);
       this.m = prime.p;
       this.prime = prime;
     } else {
@@ -3279,7 +3277,7 @@
   Red.prototype.add = function add (a, b) {
     this._verify2(a, b);
 
-    var res = a.add(b);
+    const res = a.add(b);
     if (res.cmp(this.m) >= 0) {
       res.isub(this.m);
     }
@@ -3289,7 +3287,7 @@
   Red.prototype.iadd = function iadd (a, b) {
     this._verify2(a, b);
 
-    var res = a.iadd(b);
+    const res = a.iadd(b);
     if (res.cmp(this.m) >= 0) {
       res.isub(this.m);
     }
@@ -3299,7 +3297,7 @@
   Red.prototype.sub = function sub (a, b) {
     this._verify2(a, b);
 
-    var res = a.sub(b);
+    const res = a.sub(b);
     if (res.cmpn(0) < 0) {
       res.iadd(this.m);
     }
@@ -3309,7 +3307,7 @@
   Red.prototype.isub = function isub (a, b) {
     this._verify2(a, b);
 
-    var res = a.isub(b);
+    const res = a.isub(b);
     if (res.cmpn(0) < 0) {
       res.iadd(this.m);
     }
@@ -3342,50 +3340,50 @@
   Red.prototype.sqrt = function sqrt (a) {
     if (a.isZero()) return a.clone();
 
-    var mod3 = this.m.andln(3);
+    const mod3 = this.m.andln(3);
     assert(mod3 % 2 === 1);
 
     // Fast case
     if (mod3 === 3) {
-      var pow = this.m.add(new BN(1)).iushrn(2);
+      const pow = this.m.add(new BN(1)).iushrn(2);
       return this.pow(a, pow);
     }
 
     // Tonelli-Shanks algorithm (Totally unoptimized and slow)
     //
     // Find Q and S, that Q * 2 ^ S = (P - 1)
-    var q = this.m.subn(1);
-    var s = 0;
+    const q = this.m.subn(1);
+    let s = 0;
     while (!q.isZero() && q.andln(1) === 0) {
       s++;
       q.iushrn(1);
     }
     assert(!q.isZero());
 
-    var one = new BN(1).toRed(this);
-    var nOne = one.redNeg();
+    const one = new BN(1).toRed(this);
+    const nOne = one.redNeg();
 
     // Find quadratic non-residue
     // NOTE: Max is such because of generalized Riemann hypothesis.
-    var lpow = this.m.subn(1).iushrn(1);
-    var z = this.m.bitLength();
+    const lpow = this.m.subn(1).iushrn(1);
+    let z = this.m.bitLength();
     z = new BN(2 * z * z).toRed(this);
 
     while (this.pow(z, lpow).cmp(nOne) !== 0) {
       z.redIAdd(nOne);
     }
 
-    var c = this.pow(z, q);
-    var r = this.pow(a, q.addn(1).iushrn(1));
-    var t = this.pow(a, q);
-    var m = s;
+    let c = this.pow(z, q);
+    let r = this.pow(a, q.addn(1).iushrn(1));
+    let t = this.pow(a, q);
+    let m = s;
     while (t.cmp(one) !== 0) {
-      var tmp = t;
+      let tmp = t;
       for (var i = 0; tmp.cmp(one) !== 0; i++) {
         tmp = tmp.redSqr();
       }
       assert(i < m);
-      var b = this.pow(c, new BN(1).iushln(m - i - 1));
+      const b = this.pow(c, new BN(1).iushln(m - i - 1));
 
       r = r.redMul(b);
       c = b.redSqr();
@@ -3397,7 +3395,7 @@
   };
 
   Red.prototype.invm = function invm (a) {
-    var inv = a._invmp(this.m);
+    const inv = a._invmp(this.m);
     if (inv.negative !== 0) {
       inv.negative = 0;
       return this.imod(inv).redNeg();
@@ -3410,26 +3408,26 @@
     if (num.isZero()) return new BN(1).toRed(this);
     if (num.cmpn(1) === 0) return a.clone();
 
-    var windowSize = 4;
-    var wnd = new Array(1 << windowSize);
+    const windowSize = 4;
+    const wnd = new Array(1 << windowSize);
     wnd[0] = new BN(1).toRed(this);
     wnd[1] = a;
     for (var i = 2; i < wnd.length; i++) {
       wnd[i] = this.mul(wnd[i - 1], a);
     }
 
-    var res = wnd[0];
-    var current = 0;
-    var currentLen = 0;
-    var start = num.bitLength() % 26;
+    let res = wnd[0];
+    let current = 0;
+    let currentLen = 0;
+    let start = num.bitLength() % 26;
     if (start === 0) {
       start = 26;
     }
 
     for (i = num.length - 1; i >= 0; i--) {
-      var word = num.words[i];
-      for (var j = start - 1; j >= 0; j--) {
-        var bit = (word >> j) & 1;
+      const word = num.words[i];
+      for (let j = start - 1; j >= 0; j--) {
+        const bit = (word >> j) & 1;
         if (res !== wnd[0]) {
           res = this.sqr(res);
         }
@@ -3455,13 +3453,13 @@
   };
 
   Red.prototype.convertTo = function convertTo (num) {
-    var r = num.umod(this.m);
+    const r = num.umod(this.m);
 
     return r === num ? r.clone() : r;
   };
 
   Red.prototype.convertFrom = function convertFrom (num) {
-    var res = num.clone();
+    const res = num.clone();
     res.red = null;
     return res;
   };
@@ -3497,7 +3495,7 @@
   };
 
   Mont.prototype.convertFrom = function convertFrom (num) {
-    var r = this.imod(num.mul(this.rinv));
+    const r = this.imod(num.mul(this.rinv));
     r.red = null;
     return r;
   };
@@ -3509,10 +3507,10 @@
       return a;
     }
 
-    var t = a.imul(b);
-    var c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
-    var u = t.isub(c).iushrn(this.shift);
-    var res = u;
+    const t = a.imul(b);
+    const c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
+    const u = t.isub(c).iushrn(this.shift);
+    let res = u;
 
     if (u.cmp(this.m) >= 0) {
       res = u.isub(this.m);
@@ -3526,10 +3524,10 @@
   Mont.prototype.mul = function mul (a, b) {
     if (a.isZero() || b.isZero()) return new BN(0)._forceRed(this);
 
-    var t = a.mul(b);
-    var c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
-    var u = t.isub(c).iushrn(this.shift);
-    var res = u;
+    const t = a.mul(b);
+    const c = t.maskn(this.shift).mul(this.minv).imaskn(this.shift).mul(this.m);
+    const u = t.isub(c).iushrn(this.shift);
+    let res = u;
     if (u.cmp(this.m) >= 0) {
       res = u.isub(this.m);
     } else if (u.cmpn(0) < 0) {
@@ -3541,7 +3539,7 @@
 
   Mont.prototype.invm = function invm (a) {
     // (AR)^-1 * R^2 = (A^-1 * R^-1) * R^2 = A^-1 * R
-    var res = this.imod(a._invmp(this.m).mul(this.r2));
+    const res = this.imod(a._invmp(this.m).mul(this.r2));
     return res._forceRed(this);
   };
 })(typeof module === 'undefined' || module, this);

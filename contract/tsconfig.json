@@ -1,17 +1,23 @@
 {
-    "compilerOptions": {
-      "target": "ESNext",
-      "module": "ESNext",
-      "moduleResolution": "node",
-      "lib": ["ESNext", "DOM"],
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "resolveJsonModule": true,
-      "outDir": "./dist"
-    },
-    "include": ["src/**/*.ts", "test/**/*.ts"],
-    "exclude": ["node_modules"]
-  }
-  
+  // Compiler options are directly copied from agoric-sdk/tsconfig.json
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    // This prevents checking of .d.ts files. We would like to check the ones we write
+    // but we leave this off because of the errors in deps we don't control.
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "downlevelIteration": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noEmit": true
+  },
+  "exclude": [
+    "node_modules",
+    "patch-bn.js"
+  ]
+}
