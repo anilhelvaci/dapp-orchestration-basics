@@ -7,7 +7,7 @@ ATOM_DENOM=ibc/BA313C4A19DFBF943586C0387E6B11286F9E416B4DD27574E6909CABE0E342FA
 ATOM=000000$(ATOM_DENOM)
 
 # your deployer address made from make add-address
-ADDR=agoric1sf02axavdzgx6lndpmdt8lp4n9src0q8pe6j0q
+ADDR=agoric18un2mp5d2zmr5uqdg4w99k8vhj8u0cjcfzjflv
 PROVISION_POOL_ADDR=agoric1megzytg65cyrgzs6fvzxgrcqvwwl7ugpt62346
 
 PROPOSAL=1
@@ -23,8 +23,8 @@ list:
 		awk -v RS= -F: '$$1 ~ /^[^#%]+$$/ { print $$1 }'
 
 balance-q:
-	agd keys show alice -a --keyring-backend="test"
-	agd query bank balances $(ACCT_ADDR)
+	kubectl exec -it agoriclocal-genesis-0 -c validator -- agd keys show alice -a --keyring-backend="test"
+	kubectl exec -it agoriclocal-genesis-0 -c validator -- agd query bank balances alice
 
 GAS_ADJUSTMENT=1.2
 SIGN_BROADCAST_OPTS=--keyring-backend=test --chain-id=$(CHAINID) \

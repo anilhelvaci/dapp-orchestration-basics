@@ -56,6 +56,7 @@
   "dependencies": {
     "@agoric/async-flow": "0.1.1-dev-ee2126b.0",
     "@agoric/cosmic-proto": "dev",
+    "@agoric/deploy-script-support": "dev",
     "@agoric/ertp": "dev",
     "@agoric/governance": "0.10.4-u16.1",
     "@agoric/internal": "dev",
@@ -72,6 +73,8 @@
     "@endo/marshal": "^1.5.0",
     "@endo/patterns": "^1.2.0",
     "@endo/promise-kit": "^1.1.4",
+    "execa": "^9.2.0",
+    "fs-extra": "^11.2.0",
     "ses": "1.5.0"
   },
   "ava": {
