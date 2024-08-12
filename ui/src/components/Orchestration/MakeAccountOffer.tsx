@@ -21,13 +21,15 @@ export const makeAccountOffer = async (
   }
 
   const { instances } = useContractStore.getState();
-  const instance = instances?.['orca'];
+  const instance = instances?.['basicFlows'];
 
   if (!instance) {
     setLoadingCreateAccount(false);
     handleToggle();
     throw Error('no contract instance');
   }
+
+  console.log('INSTANCE', instance);
 
   const want = {};
   const give = {};
@@ -38,7 +40,7 @@ export const makeAccountOffer = async (
     {
       source: 'contract',
       instance, 
-      publicInvitationMaker: 'makeAccountInvitation',
+      publicInvitationMaker: 'makeOrchAccountInvitation',
     },
     { give, want },
     { chainName: selectedChain },

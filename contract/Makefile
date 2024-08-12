@@ -7,14 +7,14 @@ ATOM_DENOM=ibc/BA313C4A19DFBF943586C0387E6B11286F9E416B4DD27574E6909CABE0E342FA
 ATOM=000000$(ATOM_DENOM)
 
 # your deployer address made from make add-address
-ADDR=agoric18un2mp5d2zmr5uqdg4w99k8vhj8u0cjcfzjflv
+ADDR=agoric1cyfl4h6hw3z0cy9yc9kt2k055w5rqaq565d4d9
 PROVISION_POOL_ADDR=agoric1megzytg65cyrgzs6fvzxgrcqvwwl7ugpt62346
 
 PROPOSAL=1
 VOTE_OPTION=yes
 
-CLIENTADDR=agoric12j5kzvrwunqvrga5vm4zpy3mkeh3lvyld0amz5
-CLIENT_OSMO_ADDR=osmo1rhvgsqq96n3qyv3u0zlwleyaunpmal6uhnam4z
+CLIENTADDR=agoric1rwwley550k9mmk6uq6mm6z4udrg8kyuyvfszjk
+CLIENT_OSMO_ADDR=osmo1rwwley550k9mmk6uq6mm6z4udrg8kyuyk0pd5j
 
 .PHONY: list
 # https://stackoverflow.com/a/73159833/7963
