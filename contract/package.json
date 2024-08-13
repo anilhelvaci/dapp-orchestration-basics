@@ -16,7 +16,7 @@
     "build2": "yarn build:deployer2",
     "build:deployer": "rollup -c rollup.config.mjs",
     "build:deployer2": "echo \"deployer2\"; agoric run scripts/build-contract-deployer.js",
-    "deploy": "make dev-working",
+    "deploy": "make deploy",
     "test": "ava --verbose",
     "lint": "eslint '**/*.js' --fix-dry-run --ignore-pattern '*patch*'",
     "lint:types": "tsc -p jsconfig.json",
@@ -61,12 +61,12 @@
     "typescript-eslint": "^7.13.0"
   },
   "dependencies": {
-    "@agoric/async-flow": "^0.1.1-dev-ee2126b.0",
+    "@agoric/async-flow": "0.1.1-dev-e141f05.0+e141f05",
     "@agoric/cosmic-proto": "dev",
     "@agoric/deploy-script-support": "dev",
     "@agoric/ertp": "^0.16.2",
     "@agoric/governance": "0.10.4-u16.1",
-    "@agoric/internal": "^0.4.0-u16.1",
+    "@agoric/internal": "0.3.3-dev-e141f05.0+e141f05",
     "@agoric/network": "^0.2.0-u16.1",
     "@agoric/notifier": "^0.6.2",
     "@agoric/orchestration": "dev",
