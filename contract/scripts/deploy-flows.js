@@ -9,7 +9,7 @@ import { execFile, execFileSync } from 'node:child_process';
 
 import { makeNodeBundleCache } from '@endo/bundle-source/cache.js';
 import { parseArgs } from 'node:util';
-import { makeE2ETools } from '../tools/e2e-tools.js';
+import { makeE2ETools } from '../src/flows/tools/e2e-tools.js';
 
 const nodeRequire = createRequire(import.meta.url);
 const { readJSON } = fse;

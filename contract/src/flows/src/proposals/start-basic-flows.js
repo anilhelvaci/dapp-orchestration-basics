@@ -55,9 +55,10 @@ export const startBasicFlows = async ({
       timerService: await chainTimerService,
     },
   };
-
   const { instance } = await E(startUpgradable)(startOpts);
+  produceInstance.reset();
   produceInstance.resolve(instance);
+  trace('Done.');
 };
 harden(startBasicFlows);
 
