@@ -9,7 +9,7 @@ export const defaultProposalBuilder = async ({ publishRef, install }) => {
       'getManifestForContract',
       {
         installKeys: {
-          basicFlows: publishRef(
+          sendAnywhere: publishRef(
             install(
               '../sendAnywhere.contract.js',
             ),

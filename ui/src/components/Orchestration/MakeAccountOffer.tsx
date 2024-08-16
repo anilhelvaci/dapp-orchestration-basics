@@ -20,8 +20,10 @@ export const makeAccountOffer = async (
     return;
   }
 
-  const { instances } = useContractStore.getState();
-  const instance = instances?.['basicFlows'];
+  const { instances, brands } = useContractStore.getState();
+  const instance = instances?.['sendAnywhere'];
+
+  const brand = brands?.['IST'];
 
   if (!instance) {
     setLoadingCreateAccount(false);
@@ -32,7 +34,7 @@ export const makeAccountOffer = async (
   console.log('INSTANCE', instance);
 
   const want = {};
-  const give = {};
+  const give = {Send: {brand, value: 10n}};
 
   const makeAccountofferId = Date.now();
 
@@ -40,10 +42,10 @@ export const makeAccountOffer = async (
     {
       source: 'contract',
       instance, 
-      publicInvitationMaker: 'makeOrchAccountInvitation',
+      publicInvitationMaker: 'makeSendInvitation',
     },
     { give, want },
-    { chainName: selectedChain },
+    { chainName: 'osmosis', destAddr: 'osmo1v6tatt3ld2twsqxz763wkxfv7w73dxjms4tefq' },
     async (update: { status: string; data?: unknown }) => {
       if (update.status === 'error') {
         const msg = `offer update error: ${update.data}`
